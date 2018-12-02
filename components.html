@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+      font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen,Ubuntu,Cantarell,Fira Sans,Droid Sans,Helvetica Neue,sans-serif;
+      line-height: 1.7;
+    }
+    body {
+      background: rgb(91,91,91);
+      background: radial-gradient(circle, rgba(91,91,91,1) 0%, rgba(34,34,34,1) 100%);
+    }
+    p {
+      font-size: 17px;
+      color: #f4f4f4;
+    }
+    .phone {
+      width: 375px;
+      height: 812px;
+      border: #ddd;
+      background: #f4f4f4;
+      border-radius: 15px;
+      position: relative;
+      margin: 100px;
+    }
+    .phone:after {
+      content: '';
+      z-index: -1;
+      position: absolute;
+      width: inherit;
+      height: inherit;
+      border:#222;
+      background: #222;;
+      border-radius: inherit;
+      box-shadow: 2px 2px 6px 0 rgba(100, 100, 100, 0.2);
+      top: 50%;
+      left: 50%;
+      transform-origin: center;
+      transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    #app:after {
+      content: '';
+      display: block;
+      clear: both;
+    }
+
+    .flex {
+      display: flex;
+    }
+    .flex-around {
+      justify-content: space-around;
+    }
+    .flex-between {
+      justify-content: space-between;
+    }
+    .flex-center {
+      justify-content: center;
+    }
+    .self-center {
+      align-self: center;
+    }
+    #app .app-content {
+      float: right;
+      width: calc(100% - 140px);
+      padding-top: 100px;
+      /* background: red; */
+    }
+    .app-select {
+      margin: 40px 0;
+      box-shadow: 3px 3px 7px 0 rgba(150, 150, 150, 0.3);
+      width: 120px;
+      padding: 10px;
+      
+      position: fixed;
+      background: #fefefe;
+    }
+
+    .app-img-wrapper {
+      width: 100px;
+      height: 100px;
+      border-radius: 5px;
+      padding: 12px;
+      transition: all .4s;
+      margin: 30px 0;
+    }
+
+    .app-img-wrapper:hover {
+      cursor: pointer;
+      transform: translateX(8px);
+    }
+    .app-img-wrapper .app-info:hover p{
+      transform: translateX(0);
+      opacity: 1;      
+    }
+
+    .app-img-wrapper .app-info{
+      width: 100%;
+    }
+    .app-img-wrapper .app-info img{
+      width: 100%;
+    }
+    .app-img-wrapper .app-info p{
+      text-align: center;
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      transform: translateX(-20%);
+      opacity: 0;
+      transition: all .4s;
+    }
+    .app-content .each-content{
+      max-width: 400px;
+      margin: 20px auto; 
+    }
+    .app-content .each-content img {
+      height: 200px;
+    }
+    .app-content .each-content .descrip {
+      width: calc(100% - 200px);
+    }
+
+
+    /* vue animation */
+    .fade-enter-active, .fade-leave-active {
+      transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+      opacity: 0;
+    }
+  </style>
+
+<body>
+  <!-- <div class="phone"></div> -->
+  <div id="app">
+
+    <div class="app-select">
+      <div :class="['app-img-wrapper']" v-for="i in appInfo" :key=i.id @click="switchApp(i.id)">
+        <div class="app-info">
+            <img :src="i.url" alt="">
+            <p>{{i.name}}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-content">
+      <transition name='fade'>
+        <div class="each-app" v-for="i in appInfo" :key=i.id v-if="i.id === currentSec">
+          <div class="each-content flex flex-between" v-for="j, index in i.content" :key=index @click='zoomIn'>
+            <img :src="j.img" alt="">
+            <p class="self-center descrip">{{j.text}}</p>
+          </div>
+        </div>
+      </transition>
+    </div>
+
+  </div>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"></script>
+  <script src="./utils/zoom.js"></script>
+  <script>
+    var vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          currentSec: 'bal',
+          appInfo: [
+            {
+              name: 'balsamiq',
+              id: 'bal',
+              url: 'data:image/png;base64,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',
+              content: [
+                {
+                  img: "https://lh5.googleusercontent.com/I48vg1cJ1HEEnryVD6txC8O_x_1erkqSbQqlMDo0xy6mlkyazrJzujt2KhS1XNua2u4Jq5_lNkNW33TEae0wmT-t6uLceVOp1Gi3KlqMAUqZ8pUbT_lrA5Dyyh3P2h7CwuKDWTL9",
+                  text: 'Home page showing everyday push notification, question, and different modules'
+                },
+                {
+                  img: "https://lh5.googleusercontent.com/xC0OJh-glW5_93MQvEikYs2JLRioMMff42xksToCcwsYo6eBnKDCG9mSPmuc0l55rAcwELSsdBSzwhyjC_nIqVt36wRABKKMEnnyBmrzzO53BTqlhQzBb1H1Dbagdnxot5Eck05l",
+                  text: 'User center showing another way to view and manage different modules in the app'
+                },
+                {
+                  img: "https://lh3.googleusercontent.com/ogtv5ispSh-cFv14zKW6YHLMqet1dQq38J4nbayOZj0GzTrWT-PnuxoMGf2XJRReUZSp1y6_MuRRl4cX2VZt6KVGpG_kEDoteYDFAq8MNrBAscA4tyPAz2RXUqiYRjiC_RvQZ3Lv",
+                  text: 'My ambition to build up a community where questions could be posted and get responses'
+                },
+                {
+                  img: "https://lh3.googleusercontent.com/SMjat5OWdPPtyigrLXIxUjX9OoKPop767ZIY0rZOQGZmSNfwZZtS1A-czpdxwnkHfVdBeQF37qtB0a5W7LUobRMPrml3ObygFFD6eimYzRoXqjIV9Zvjt9f68VTLAJ57AcqA_VuO",
+                  text: 'View their learning statistics in terms of duration, subject, average time spent on each quiz, etc.'
+                },
+                {
+                  img: "https://lh5.googleusercontent.com/VX5BLVUKOLm0D50yuuEzJwnEh_TD4S-b-DdsLwWoAgHgk9OdSr_HvlwiA884N0djK4lLAh8ZfnUThHGwn1AHwqkzjUEHLgNN-JW5tLFy60j-3EJnRyiXeiOeKScrFCVHTVikfB79",
+                  text: 'View all the previous history questions at once in different ways'
+                },
+                {
+                  img: "https://lh4.googleusercontent.com/7Jdbd4HmmnvGlsEbpjE32stHbN84c2oGhfSV8GkXYmh5I7qWV25Wo7G-SzmP_qoilDoq1NUyCBirmmoB2l2uJPue70oMn8nhMAAnjqUihFqOuur-oGWz4zsD3ovronvyZTu1ZSFY",
+                  text: 'The question detail page. User are able to switch to the questions of different days'
+                },
+                {
+                  img: "https://lh6.googleusercontent.com/HZWbwpyQAXxhtR0mmR8-Je-ESGuafsRBnYHLTmrDzVsEoxnRvlZ9fIad59BBf_sOrjDp36UYGgsAMXlEzj_y2WcGNpnpSLamEtqBmWXNchBtDpO22hm_nYvO5FXi_p74NKnRyzCu",
+                  text: `There are also comment section that enable user to read and post comments`
+                },
+                {
+                  img: "https://lh3.googleusercontent.com/gaIu52AFMexh0R78i11MOnVXXecppR5J40mTggq_SY0KokrEnkqaohxSIjyfTlksMYh2o-O3RSb_oh9EcHqwmjdKHJB00SA8xmsvlF9PmbCXmGyxGQGrz_swnIEXnU4Y4sA-SQH8",
+                  text: 'The algorithm visualization page'
+                },
+                {
+                  img: "https://lh4.googleusercontent.com/GnGmKLMo7yOuivgcZbt7XpKqDoJn0iFPnTTDPEottEvxZVcYd0H40XnGuCtTBWML4BRTa52ohfO7sYgzWvxXHCu3KCZVXRumM4_CqTC1bOuDwF10zQg2v_cHDelWP-7mXBfmFCJz",
+                  text: 'The study note section, which will cover some essential knowledge that teachers are not able to cover in limited class time'
+                },
+              ]
+            },
+            {
+              name: 'sketch',
+              id: 'sketch',
+              url: 'https://www.sketchapp.com/images/pages/home/52/logo.png',
+              content: [
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/Home_phone.png',
+                  text: 'Home Page'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768359/stack-never-flow/sketch/user_center.png',
+                  text: 'User Center'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/que_history.png',
+                  text: 'Question History'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/interview-que.png',
+                  text: 'Interview Question - All'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/interview_que_saved.png',
+                  text: 'Interview Question - Save a question'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/interview_que_unsaved.png',
+                  text: 'Interview Question - View saved question'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/user_center_copy.png',
+                  text: 'Community'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/algorithm.png',
+                  text: 'Algorithm'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/algorithm_sort_method.png',
+                  text: 'Algorithm - Select Algorithm'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/algorithm_process.png',
+                  text: 'Algorithm - Animating'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/question_detail1.png',
+                  text: 'Question page - Unselected'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/question_detail2.png',
+                  text: 'Question page - Select the right answer'
+                },
+                {
+                  img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543768358/stack-never-flow/sketch/question_detail1.png',
+                  text: 'Question page - Select the wrong answer'
+                },
+              ]
+            },
+            {
+              name: 'overflow',
+              id: 'overflow',
+              url: 'https://cdn-images-1.medium.com/fit/c/120/120/1*zMXJyldDqHh1j6td5pQKqg.png',
+              content: [
+              {
+                img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543789988/stack-never-flow/workflow.png',
+              }
+              ]
+            },
+            {
+              name: 'Wechat Mini Program Dev Tools',
+              id: 'WechatDev',
+              url: 'data:image/jpeg;base64,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'
+            },
+          ]
+        }
+      },
+      methods: {
+        switchApp(e) {
+          this.currentSec = e;
+        },
+        zoomIn(e) {
+          let el = e.currentTarget;
+          zoom.to({
+            element: el,
+            // Amount of empty space around zoomed element
+            // padding: 0,
+
+            // Function to call once zooming completes
+            // callback: function() { /* ... */ }
+          });
+        }
+      }
+    })
+  </script>
+</body>
+</html>

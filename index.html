@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body {
+      background: rgb(91,91,91);
+      background: radial-gradient(circle, rgba(91,91,91,1) 0%, rgba(34,34,34,1) 100%);
+    }
+    img {
+      width: 300px;
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  
+    <div class="grid">
+        <img src="https://drscdn.500px.org/photo/272118987/q%3D80_m%3D2000_k%3D1/v2?user_id=14507801&webp=true&sig=e08d52f319660ae4493dd33ee53fe7704c307955267ed748dbcf54a0d0f4cf84" alt="">
+        <img src="https://drscdn.500px.org/photo/169694959/q%3D80_m%3D2000_k%3D1/v2?user_id=14507801&webp=true&sig=43a2659cef3faf4631487a22eb63fa377a0516e8b2ee3f9ff8df802838b38257" alt="">
+        <img src="https://drscdn.500px.org/photo/125411399/q%3D80_m%3D2000/v2?user_id=14507801&webp=true&sig=de6268fc627789e3aabee17b368dad2da61645b74bd94f70cc13ab949fc28501" alt="">
+    </div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/waterfall.js/1.0.2/waterfall.min.js"></script>
+    <script>
+      let imgs = document.querySelectorAll('img');
+      imgs.forEach((i)=> {
+        i.style.width = random(300, 600) + 'px'; 
+      })
+      waterfall('.grid');
+
+      function random(min, max) {
+        return Math.floor((Math.random()* (max-min) + min))
+      }
+
+    </script>
+</body>
+</html>
