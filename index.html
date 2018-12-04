@@ -74,7 +74,9 @@
       /* background: red; */
     }
     .app-select {
-      margin: 40px 0;
+      /* margin: 40px 0; */
+      top: 50%;
+      transform: translateY(-50%);
       box-shadow: 3px 3px 7px 0 rgba(150, 150, 150, 0.3);
       width: 120px;
       padding: 10px;
@@ -137,6 +139,11 @@
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
       opacity: 0;
     }
+    
+    /* overflow image */
+    .overflow-img {
+      width: 100%;
+    }
 
     /* wechat dev demo video */
     .wechat-dev-demo {
@@ -161,10 +168,13 @@
       <transition name='fade'>
         <div class="each-app" v-for="i in appInfo" :key=i.id v-if="i.id === currentSec">
           <template v-if="i.content">
-            <div class="each-content flex flex-between" v-for="j, index in i.content" :key=index @click='zoomIn'>
+            <div class="each-content flex flex-between" v-for="j, index in i.content" :key=index @click='zoomIn' :data-id="i.id">
               <img :src="j.img" alt="">
               <p class="self-center descrip">{{j.text}}</p>
             </div>
+        </template>
+        <template v-else-if="i.id==='overflow'">
+            <img class="overflow-img" src="https://res.cloudinary.com/shuaiyuan/image/upload/v1543789988/stack-never-flow/workflow.png" alt="">
         </template>
         <template v-else-if="i.id==='WechatDev'">
             <iframe class="wechat-dev-demo" width="960" height="540" src="https://www.youtube.com/embed/P84xGXl6yks?autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -291,11 +301,6 @@
               name: 'overflow',
               id: 'overflow',
               url: 'https://cdn-images-1.medium.com/fit/c/120/120/1*zMXJyldDqHh1j6td5pQKqg.png',
-              content: [
-              {
-                img: 'https://res.cloudinary.com/shuaiyuan/image/upload/v1543789988/stack-never-flow/workflow.png',
-              }
-              ]
             },
             {
               name: 'Wechat Mini Program Dev Tools',
