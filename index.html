@@ -137,12 +137,17 @@
     .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
       opacity: 0;
     }
+
+    /* wechat dev demo video */
+    .wechat-dev-demo {
+      margin: 0 auto;
+      display: block;
+    }
   </style>
 
 <body>
   <!-- <div class="phone"></div> -->
   <div id="app">
-
     <div class="app-select">
       <div :class="['app-img-wrapper']" v-for="i in appInfo" :key=i.id @click="switchApp(i.id)">
         <div class="app-info">
@@ -155,10 +160,15 @@
     <div class="app-content">
       <transition name='fade'>
         <div class="each-app" v-for="i in appInfo" :key=i.id v-if="i.id === currentSec">
-          <div class="each-content flex flex-between" v-for="j, index in i.content" :key=index @click='zoomIn'>
-            <img :src="j.img" alt="">
-            <p class="self-center descrip">{{j.text}}</p>
-          </div>
+          <template v-if="i.content">
+            <div class="each-content flex flex-between" v-for="j, index in i.content" :key=index @click='zoomIn'>
+              <img :src="j.img" alt="">
+              <p class="self-center descrip">{{j.text}}</p>
+            </div>
+        </template>
+        <template v-else-if="i.id==='WechatDev'">
+            <iframe class="wechat-dev-demo" width="960" height="540" src="https://www.youtube.com/embed/P84xGXl6yks?autoplay=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </template>
         </div>
       </transition>
     </div>
